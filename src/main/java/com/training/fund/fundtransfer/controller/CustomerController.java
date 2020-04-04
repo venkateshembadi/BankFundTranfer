@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.training.fund.fundtransfer.entity.Customer;
+import com.training.fund.fundtransfer.exception.AmountNotExistsException;
 import com.training.fund.fundtransfer.exception.CustomerException;
 import com.training.fund.fundtransfer.model.CustomerRequest;
 import com.training.fund.fundtransfer.model.Transfer;
@@ -32,22 +33,22 @@ public class CustomerController {
 			responseEntity = new ResponseEntity<Customer>(customerRes, HttpStatus.CREATED);
 		} catch (CustomerException e) {
 			responseEntity = new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
-			
+
 		}
 
 		return responseEntity;
 
 	}
-	
+
 	@PutMapping
-	public ResponseEntity<?> transferAmount(@RequestBody Transfer  transfer){
+	public ResponseEntity<?> transferAmount(@RequestBody Transfer transfer) {
 		ResponseEntity<?> responseEntity;
 		try {
-			Customer customerRes = customerService.transferAmount(transfer);
-			responseEntity = new ResponseEntity<Customer>(customerRes, HttpStatus.CREATED);
-		} catch (CustomerException e) {
-			responseEntity = new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
-			
+			Transfer customerRes = customerService.transferAmount(transfer);
+			responseEntity = new ResponseEntity<Transfer>(customerRes, HttpStatus.CREATED);
+		} catch (Exception e) {
+			throw new AmountNotExistsException("Please enter valid amount");
+
 		}
 
 		return responseEntity;

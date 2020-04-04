@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import com.training.fund.fundtransfer.constants.FundTransferConstants;
 import com.training.fund.fundtransfer.entity.Account;
 import com.training.fund.fundtransfer.entity.Customer;
+import com.training.fund.fundtransfer.exception.AmountNotExistsException;
 import com.training.fund.fundtransfer.model.CustomerRequest;
 import com.training.fund.fundtransfer.model.Transfer;
 import com.training.fund.fundtransfer.repository.AccountRepository;
@@ -21,7 +22,7 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Autowired
 	public CustomerRepository customerRepository;
-	
+
 	@Autowired
 	public AccountRepository accountRepository;
 
@@ -41,11 +42,11 @@ public class CustomerServiceImpl implements CustomerService {
 			if (StringUtils.isNotBlank(request.getLname()))
 				customer.setLname(request.getLname());
 			if (StringUtils.isNotBlank(request.getAdhar()))
-				customer.setAadhar(request.getFname());
+				customer.setAadhar(request.getAdhar());
 			if (StringUtils.isNotBlank(request.getPan()))
 				customer.setPan(request.getPan());
 			if (StringUtils.isNotBlank(request.getAddress()))
-				customer.setAddress(request.getFname());
+				customer.setAddress(request.getAddress());
 			if (request.getAge() != null)
 				customer.setAge(request.getAge());
 
@@ -76,35 +77,39 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-	public Customer transferAmount(Transfer transfer) {
-		//Optional<Customer> custFromRes = customerRepository.findById(transfer.getFromCid());
-		//Optional<Customer> custToRes = customerRepository.findById(transfer.getToCid());
+	public Transfer transferAmount(Transfer transfer) {
 		Optional<Account> custFromRes = accountRepository.findById(transfer.getFromCid());
 		Optional<Account> custToRes = accountRepository.findById(transfer.getToCid());
-		List<Customer> listCust = customerRepository.findAll();
-		Account fromRes=null;
-		Account toRes=null;
-		if(custFromRes.isPresent() && custToRes.isPresent()) {
-			fromRes=custFromRes.get();
+		// List<Customer> listCust = customerRepository.findAll();
+		Account fromRes = null;
+		Account toRes = null;
+		if (custFromRes.isPresent() && custToRes.isPresent()) {
+			fromRes = custFromRes.get();
 			toRes = custToRes.get();
 			Integer fromAmt = fromRes.getBalance();
-			Integer toAmt = toRes.getBalance();
-			Integer faccId = fromRes.getAccountId();
-			Integer taccId=toRes.getAccountId();
-			toAmt=toAmt + transfer.getAmount();
-			fromAmt=fromAmt-transfer.getAmount();
-			fromRes.setBalance(fromAmt);
-			fromRes.setAccountId(faccId);
-			toRes.setAccountId(taccId);
-			toRes.setBalance(toAmt);
-			accountRepository.save(fromRes);
-			accountRepository.save(toRes);
-			
+
+			if (fromAmt > 0 && fromAmt > transfer.getAmount()) {
+				Integer toAmt = toRes.getBalance();
+				Integer faccId = fromRes.getAccountId();
+				Integer taccId = toRes.getAccountId();
+				toAmt = toAmt + transfer.getAmount();
+				fromAmt = fromAmt - transfer.getAmount();
+				fromRes.setBalance(fromAmt);
+				fromRes.setAccountId(faccId);
+				toRes.setAccountId(taccId);
+				toRes.setBalance(toAmt);
+				accountRepository.save(fromRes);
+				accountRepository.save(toRes);
+
+			} else {
+
+				throw new AmountNotExistsException();
+			}
+
 		}
-		
-		
-		return null;
-		
+
+		return transfer;
+
 	}
 
 }

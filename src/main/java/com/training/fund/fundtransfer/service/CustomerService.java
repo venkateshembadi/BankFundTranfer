@@ -8,6 +8,6 @@ public interface CustomerService {
 	
 	public Customer registerCustomer(CustomerRequest account);
 	
-	public Customer transferAmount(Transfer transfer);
+	public Transfer transferAmount(Transfer transfer);
 
 }
