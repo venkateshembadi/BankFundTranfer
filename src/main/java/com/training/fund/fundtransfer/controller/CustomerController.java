@@ -1,13 +1,17 @@
 package com.training.fund.fundtransfer.controller;
 
+import java.util.List;
+
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.training.fund.fundtransfer.entity.Customer;
@@ -41,7 +45,7 @@ public class CustomerController {
 	}
 
 	@PutMapping
-	public ResponseEntity<?> transferAmount(@RequestBody Transfer transfer) {
+	public ResponseEntity<?> transferAmount(@RequestBody @Valid Transfer transfer) {
 		ResponseEntity<?> responseEntity;
 		try {
 			Transfer customerRes = customerService.transferAmount(transfer);
@@ -52,6 +56,13 @@ public class CustomerController {
 		}
 
 		return responseEntity;
+	}
+	
+	@GetMapping
+	public ResponseEntity<?> fetchAllAccountDetails(){
+		ResponseEntity<?> responseEntity;
+		List<Customer> list = customerService.fetchAllAccountDetails();
+		return responseEntity=new ResponseEntity<List<Customer>>(list,HttpStatus.OK);
 	}
 
 }

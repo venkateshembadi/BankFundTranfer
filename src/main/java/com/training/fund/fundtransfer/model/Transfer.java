@@ -1,15 +1,22 @@
 package com.training.fund.fundtransfer.model;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 public class Transfer {
 
+	@NotNull(message="Please from customer Id")
 	public Integer fromCid;
 
+	
 	private long fromAccountNumber;
 
+	@NotNull(message="Please from customer amount")
 	public Integer amount;
 
 	public long toAccountNumber;
 	
+	@NotNull(message="Please To customer Id")
 	public Integer toCid;
 
 	

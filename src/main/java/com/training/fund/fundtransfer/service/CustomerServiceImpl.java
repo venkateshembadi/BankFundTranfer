@@ -112,4 +112,9 @@ public class CustomerServiceImpl implements CustomerService {
 
 	}
 
+	@Override
+	public List<Customer> fetchAllAccountDetails() {
+		return customerRepository.findAll();
+	}
+
 }

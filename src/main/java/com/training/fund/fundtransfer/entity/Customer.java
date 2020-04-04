@@ -43,9 +43,7 @@ public class Customer {
 	@Column(name = "AGE")
 	private Integer age;
 
-	//@OneToOne
-	@OneToOne(mappedBy = "customer",cascade=CascadeType.ALL, fetch = FetchType.LAZY)
-	@JsonIgnore
+	@OneToOne(mappedBy = "customer",cascade=CascadeType.ALL, fetch = FetchType.EAGER)
 	public Account account;
 
 	public String getFname() {
