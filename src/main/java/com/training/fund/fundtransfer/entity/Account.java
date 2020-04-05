@@ -1,11 +1,16 @@
 package com.training.fund.fundtransfer.entity;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -37,6 +42,10 @@ public class Account {
 	@Column(name = "BALANCE")
 	private Integer balance;
 
+	@OneToMany(mappedBy ="account",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+	public List<AccountStatement> statusAccount;
+
+	
 	public String getAccountType() {
 		return accountType;
 	}
@@ -48,8 +57,16 @@ public class Account {
 	public Integer getAccountId() {
 		return accountId;
 	}
-
 	
+	
+	public List<AccountStatement> getStatusAccount() {
+		return statusAccount;
+	}
+
+	public void setStatusAccount(List<AccountStatement> statusAccount) {
+		this.statusAccount = statusAccount;
+	}
+
 	public long getAccountNumber() {
 		return accountNumber;
 	}
@@ -82,7 +99,6 @@ public class Account {
 		return customer;
 	}
 
-	
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
 	}

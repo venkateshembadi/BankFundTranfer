@@ -12,6 +12,10 @@ public class AccountReq {
 	private String accountType;
 	
 	private Integer balance;
+	
+	private Long date;
+	
+	private String status;
 
 	public String getBankName() {
 		return bankName;
@@ -26,7 +30,22 @@ public class AccountReq {
 	}
 
 	
-	
+	public Long getDate() {
+		return date;
+	}
+
+	public void setDate(Long date) {
+		this.date = date;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
 	public Integer getBalance() {
 		return balance;
 	}

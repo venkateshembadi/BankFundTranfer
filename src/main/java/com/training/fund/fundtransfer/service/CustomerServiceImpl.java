@@ -1,5 +1,7 @@
 package com.training.fund.fundtransfer.service;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
@@ -7,9 +9,11 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import com.training.fund.fundtransfer.constants.FundTransferConstants;
 import com.training.fund.fundtransfer.entity.Account;
+import com.training.fund.fundtransfer.entity.AccountStatement;
 import com.training.fund.fundtransfer.entity.Customer;
 import com.training.fund.fundtransfer.exception.AmountNotExistsException;
 import com.training.fund.fundtransfer.model.CustomerRequest;
@@ -51,14 +55,23 @@ public class CustomerServiceImpl implements CustomerService {
 				customer.setAge(request.getAge());
 
 			Account acc = null;
+			AccountStatement statement = null;
 			if (request.getAccountRequest() != null) {
 				acc = new Account();
+				List<AccountStatement> stmtList = new ArrayList<>();
+				statement = new AccountStatement();
 				if (StringUtils.isNotBlank(request.getAccountRequest().getBankName()))
 					acc.setBankName(request.getAccountRequest().getBankName());
 				if (StringUtils.isNotBlank(request.getAccountRequest().getAccountType()))
 					acc.setAccountType(request.getAccountRequest().getAccountType());
 				acc.setAccountNumber(randomNumber());
 				acc.setBalance(FundTransferConstants.BALANCE);
+				statement.setAccountAmt(FundTransferConstants.BALANCE);
+				statement.setStatus(FundTransferConstants.STATUS_CREDITED);
+				statement.setDate(new Date());
+				statement.setAccount(acc);
+				stmtList.add(statement);
+				acc.setStatusAccount(stmtList);
 				acc.setCustomer(customer);
 			}
 			customer.setAccount(acc);
@@ -88,7 +101,7 @@ public class CustomerServiceImpl implements CustomerService {
 			toRes = custToRes.get();
 			Integer fromAmt = fromRes.getBalance();
 
-			if (fromAmt > 0 && fromAmt > transfer.getAmount()) {
+			if (fromAmt > 0 && fromAmt >= transfer.getAmount()) {
 				Integer toAmt = toRes.getBalance();
 				Integer faccId = fromRes.getAccountId();
 				Integer taccId = toRes.getAccountId();
@@ -98,6 +111,16 @@ public class CustomerServiceImpl implements CustomerService {
 				fromRes.setAccountId(faccId);
 				toRes.setAccountId(taccId);
 				toRes.setBalance(toAmt);
+				if(fromRes !=null) {
+					List<AccountStatement> fromStatemet = fromRes.getStatusAccount();
+					List<AccountStatement> fromList=mapFromAccountStatement(fromStatemet,transfer,fromRes);
+					fromRes.setStatusAccount(fromList);
+				}
+				if(toRes !=null) {
+					List<AccountStatement> toStatemet = toRes.getStatusAccount();
+					List<AccountStatement> toList=mapToAccountStatement(toStatemet,transfer,toRes);
+					toRes.setStatusAccount(toList);
+				}
 				accountRepository.save(fromRes);
 				accountRepository.save(toRes);
 
@@ -111,6 +134,33 @@ public class CustomerServiceImpl implements CustomerService {
 		return transfer;
 
 	}
+	
+	private List<AccountStatement> mapFromAccountStatement(List<AccountStatement> stmt,Transfer transfer,Account acc){
+		AccountStatement accstmt=null;
+		if(!CollectionUtils.isEmpty(stmt)) {
+			accstmt=new AccountStatement();
+			accstmt.setAccountAmt(transfer.getAmount());
+			accstmt.setDate(new Date());
+			accstmt.setStatus(FundTransferConstants.STATUS_DEPITED);
+			accstmt.setAccount(acc);
+			stmt.add(accstmt);
+		}
+		return stmt;
+	}
+	
+	private List<AccountStatement> mapToAccountStatement(List<AccountStatement> stmt,Transfer transfer,Account acc){
+		AccountStatement accstmt=null;
+		if(!CollectionUtils.isEmpty(stmt)) {
+			accstmt=new AccountStatement();
+			accstmt.setAccountAmt(transfer.getAmount());
+			accstmt.setDate(new Date());
+			accstmt.setStatus(FundTransferConstants.STATUS_CREDITED);
+			accstmt.setAccount(acc);
+			stmt.add(accstmt);
+		}
+		return stmt;
+	}
+
 
 	@Override
 	public List<Customer> fetchAllAccountDetails() {
