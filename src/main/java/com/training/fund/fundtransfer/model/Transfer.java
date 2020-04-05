@@ -1,6 +1,6 @@
 package com.training.fund.fundtransfer.model;
 
-import javax.validation.constraints.NotBlank;
+
 import javax.validation.constraints.NotNull;
 
 public class Transfer {
@@ -18,8 +18,8 @@ public class Transfer {
 	
 	@NotNull(message="Please To customer Id")
 	public Integer toCid;
-
 	
+		
 	public Integer getFromCid() {
 		return fromCid;
 	}

@@ -15,9 +15,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.training.fund.fundtransfer.entity.AccountStatement;
 import com.training.fund.fundtransfer.entity.Customer;
 import com.training.fund.fundtransfer.exception.AmountNotExistsException;
 import com.training.fund.fundtransfer.exception.CustomerException;
+import com.training.fund.fundtransfer.model.AccountStatementReq;
 import com.training.fund.fundtransfer.model.CustomerRequest;
 import com.training.fund.fundtransfer.model.Transfer;
 import com.training.fund.fundtransfer.service.CustomerServiceImpl;
@@ -71,6 +73,13 @@ public class CustomerController {
 		ResponseEntity<?> responseEntity;
 		Customer custRes = customerService.fetchAccountDetails(cid);
 		return responseEntity = new ResponseEntity<Customer>(custRes, HttpStatus.OK);
+	}
+	
+	@PutMapping(value="/statement")
+	public ResponseEntity<?> fetchAccountStatement(@RequestBody AccountStatementReq account) {
+		ResponseEntity<?> responseEntity;
+		List<AccountStatement> list = customerService.fetchAccountStatement(account.getStartDate(),account.getEndDate());
+		return responseEntity = new ResponseEntity<List<AccountStatement>>(list, HttpStatus.OK);
 	}
 
 }

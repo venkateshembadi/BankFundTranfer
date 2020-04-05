@@ -19,6 +19,7 @@ import com.training.fund.fundtransfer.exception.AmountNotExistsException;
 import com.training.fund.fundtransfer.model.CustomerRequest;
 import com.training.fund.fundtransfer.model.Transfer;
 import com.training.fund.fundtransfer.repository.AccountRepository;
+import com.training.fund.fundtransfer.repository.AccountStatementRepository;
 import com.training.fund.fundtransfer.repository.CustomerRepository;
 
 @Component
@@ -29,6 +30,9 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Autowired
 	public AccountRepository accountRepository;
+	
+	@Autowired
+	public AccountStatementRepository accountStatementRepository;
 
 	@Override
 	public Customer registerCustomer(CustomerRequest customerRequest) {
@@ -176,5 +180,13 @@ public class CustomerServiceImpl implements CustomerService {
 		}
 		return customer;
 	}
+
+	@Override
+	public List<AccountStatement> fetchAccountStatement(Date startDate, Date endDate) {
+		List<AccountStatement> listStatement = accountStatementRepository.fetchAccountHistory(startDate,endDate);
+		return listStatement;
+	}
+	
+	
 
 }
