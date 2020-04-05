@@ -1,25 +1,28 @@
 package com.training.fund.fundtransfer.model;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+
 public class CustomerRequest {
-	
+
+	@NotBlank(message = "First name can not be Blank")
 	private String fname;
-	
+
+	@NotBlank(message = "Last name can not be Blank")
 	private String lname;
-	
+
 	private String address;
-	
-	private String adhar;
-	
+
+	@NotBlank(message = "Aadhar can not be Blank")
+	private String aadhar;
+
 	private String pan;
-	
+
 	private Integer age;
-	
-	public Integer fromCid;
 
 	public Integer amount;
-	
-	public Integer toCid;
 
+	@Valid
 	private AccountReq accountRequest;
 
 	public String getFname() {
@@ -41,16 +44,6 @@ public class CustomerRequest {
 	public String getLname() {
 		return lname;
 	}
-	
-	
-
-	public Integer getFromCid() {
-		return fromCid;
-	}
-
-	public void setFromCid(Integer fromCid) {
-		this.fromCid = fromCid;
-	}
 
 	public Integer getAmount() {
 		return amount;
@@ -58,14 +51,6 @@ public class CustomerRequest {
 
 	public void setAmount(Integer amount) {
 		this.amount = amount;
-	}
-
-	public Integer getToCid() {
-		return toCid;
-	}
-
-	public void setToCid(Integer toCid) {
-		this.toCid = toCid;
 	}
 
 	public void setLname(String lname) {
@@ -80,12 +65,12 @@ public class CustomerRequest {
 		this.address = address;
 	}
 
-	public String getAdhar() {
-		return adhar;
+	public String getAadhar() {
+		return aadhar;
 	}
 
-	public void setAdhar(String adhar) {
-		this.adhar = adhar;
+	public void setAadhar(String aadhar) {
+		this.aadhar = aadhar;
 	}
 
 	public String getPan() {
@@ -96,7 +81,6 @@ public class CustomerRequest {
 		this.pan = pan;
 	}
 
-	
 	public AccountReq getAccountRequest() {
 		return accountRequest;
 	}
@@ -104,7 +88,5 @@ public class CustomerRequest {
 	public void setAccountRequest(AccountReq accountRequest) {
 		this.accountRequest = accountRequest;
 	}
-	
-	
 
 }

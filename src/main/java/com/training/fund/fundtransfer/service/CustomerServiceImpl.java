@@ -41,8 +41,8 @@ public class CustomerServiceImpl implements CustomerService {
 				customer.setFname(request.getFname());
 			if (StringUtils.isNotBlank(request.getLname()))
 				customer.setLname(request.getLname());
-			if (StringUtils.isNotBlank(request.getAdhar()))
-				customer.setAadhar(request.getAdhar());
+			if (StringUtils.isNotBlank(request.getAadhar()))
+				customer.setAadhar(request.getAadhar());
 			if (StringUtils.isNotBlank(request.getPan()))
 				customer.setPan(request.getPan());
 			if (StringUtils.isNotBlank(request.getAddress()))
@@ -115,6 +115,16 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	public List<Customer> fetchAllAccountDetails() {
 		return customerRepository.findAll();
+	}
+
+	@Override
+	public Customer fetchAccountDetails(Integer cid) {
+		Customer customer = null;
+		Optional<Customer> custRes = customerRepository.findById(cid);
+		if (custRes.isPresent()) {
+			customer = custRes.get();
+		}
+		return customer;
 	}
 
 }

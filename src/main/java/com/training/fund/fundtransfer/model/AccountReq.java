@@ -1,7 +1,10 @@
 package com.training.fund.fundtransfer.model;
 
+import javax.validation.constraints.NotBlank;
+
 public class AccountReq {
 	
+	@NotBlank(message="Bank Name can not be Blank")
 	private String bankName;
 	
 	private Integer accountNumber;

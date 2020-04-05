@@ -13,5 +13,7 @@ public interface CustomerService {
 	public Transfer transferAmount(Transfer transfer);
 	
 	List<Customer> fetchAllAccountDetails();
+	
+	Customer fetchAccountDetails(Integer cid);
 
 }

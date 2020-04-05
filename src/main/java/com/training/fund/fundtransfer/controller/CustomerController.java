@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,7 +30,7 @@ public class CustomerController {
 	public CustomerServiceImpl customerService;
 
 	@PostMapping
-	public ResponseEntity<?> registerCustomer(@RequestBody CustomerRequest request) {
+	public ResponseEntity<?> registerCustomer(@RequestBody @Valid CustomerRequest request) {
 		ResponseEntity<?> responseEntity;
 
 		try {
@@ -57,12 +58,19 @@ public class CustomerController {
 
 		return responseEntity;
 	}
-	
+
 	@GetMapping
-	public ResponseEntity<?> fetchAllAccountDetails(){
+	public ResponseEntity<?> fetchAllAccountDetails() {
 		ResponseEntity<?> responseEntity;
 		List<Customer> list = customerService.fetchAllAccountDetails();
-		return responseEntity=new ResponseEntity<List<Customer>>(list,HttpStatus.OK);
+		return responseEntity = new ResponseEntity<List<Customer>>(list, HttpStatus.OK);
+	}
+
+	@GetMapping(value = "/accdetails/{cid}")
+	public ResponseEntity<?> fetchAccountDetails(@PathVariable("cid") Integer cid) {
+		ResponseEntity<?> responseEntity;
+		Customer custRes = customerService.fetchAccountDetails(cid);
+		return responseEntity = new ResponseEntity<Customer>(custRes, HttpStatus.OK);
 	}
 
 }
